@@ -1,7 +1,15 @@
+
+require 'sensu-plugins-opsgenie/version'
+
+# Load the defaults
+
 #
-# Set gem version
+# Default class
 #
 module SensuPluginsOpsgenie
-  # Gem version
-  VERSION = '0.0.1.alpha.1'
+  class << self
+  end
+
+  class << self
+  end
 end
