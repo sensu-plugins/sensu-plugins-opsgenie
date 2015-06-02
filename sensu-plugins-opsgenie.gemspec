@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.authors                = ['Sensu-Plugins and contributors']
   s.cert_chain             = ['certs/sensu-plugins.pem']
   s.date                   = Date.today.to_s
-  s.description            = 'Sensu plugins for working with opsgenie'
+  s.description            = 'Sensu plugins for Opsgenie'
   s.email                  = '<sensu-users@googlegroups.com>'
   s.executables            = Dir.glob('bin/**/*.rb').map { |file| File.basename(file) }
   s.files                  = Dir.glob('{bin,lib}/**/*') + %w(LICENSE README.md CHANGELOG.md)
@@ -49,4 +49,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'redcarpet',                 '~> 3.2'
   s.add_development_dependency 'yard',                      '~> 0.8'
   s.add_development_dependency 'pry',                       '~> 0.10'
+=======
+
 end
