@@ -14,14 +14,14 @@ class Opsgenie < Sensu::Handler
          description: 'Configuration name',
          short: '-j JSONCONFIG',
          long: '--json JSONCONFIG',
-         default: 'opsgenie'
+         default: 'opsgenie.json'
 
   def handle
-    @json_config = config[:json_config]
+    @json_config = JSON.parse(File.open(config[:json_config]).read)
     description = @event['notification'] || [@event['client']['name'], @event['check']['name'], @event['check']['output'].chomp].join(' : ')
 
     begin
-      timeout(3) do
+      timeout(30) do
         response = case @event['action']
                    when 'create'
                      create_alert(description)
@@ -53,8 +53,8 @@ class Opsgenie < Sensu::Handler
 
   def create_alert(description)
     tags = []
-    tags << settings[@json_config]['tags'] if settings[@json_config]['tags']
-    tags << 'OverwriteQuietHours' if event_status == 2 && settings[@json_config]['overwrite_quiet_hours'] == true
+    tags << @json_config['opsgenie']['tags'] if @json_config['opsgenie']['tags']
+    tags << 'OverwriteQuietHours' if event_status == 2 && @json_config['opsgenie']['overwrite_quiet_hours'] == true
     tags << 'unknown' if event_status >= 3
     tags << 'critical' if event_status == 2
     tags << 'warning' if event_status == 1
@@ -63,11 +63,11 @@ class Opsgenie < Sensu::Handler
   end
 
   def post_to_opsgenie(action = :create, params = {})
-    params['customerKey'] = settings[@json_config]['customerKey']
-    params['recipients']  = settings[@json_config]['recipients']
+    params['customerKey'] = @json_config['opsgenie']['customerKey']
+    params['recipients']  = @json_config['opsgenie']['recipients']
 
     # override source if specified, default is ip
-    params['source'] = settings[@json_config]['source'] if settings[@json_config]['source']
+    params['source'] = @json_config['source'] if @json_config['source']
 
     uripath = (action == :create) ? '' : 'close'
     uri = URI.parse("https://api.opsgenie.com/v1/json/alert/#{uripath}")
