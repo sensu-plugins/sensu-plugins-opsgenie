@@ -3,7 +3,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
-## Unreleased
+## [Unreleased]
+### Added
+- Added team support for OpsGenie alerts.
+
+### Updated
+- Moved adding "recipients" parameter to JSON content to create_alert function. Recipients parameter is not available for close_alert.
+
+### Fixed
+- Fixed getting "source" field from JSON.
 
 ## [0.0.2] - 2015-07-14
 ### Changed
