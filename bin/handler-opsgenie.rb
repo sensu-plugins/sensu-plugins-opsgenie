@@ -59,8 +59,8 @@ class Opsgenie < Sensu::Handler
     tags << 'critical' if event_status == 2
     tags << 'warning' if event_status == 1
 
-    recipients = @json_config['opsgenie']['recipients']
-    teams = @json_config['opsgenie']['teams']
+    recipients = @json_config['opsgenie']['recipients'] if @json_config['opsgenie']['recipients']
+    teams = @json_config['opsgenie']['teams'] if @json_config['opsgenie']['teams']
 
     post_to_opsgenie(:create, alias: event_id, message: description, tags: tags.join(','), recipients: recipients, teams: teams)
   end
