@@ -18,6 +18,10 @@ class Opsgenie < Sensu::Handler
 
   def handle
     @json_config = JSON.parse(File.open(config[:json_config]).read)
+    # allow parameters to be changed by the check
+    if @event['check']['opsgenie']
+      @json_config['opsgenie'].merge!(@event['check']['opsgenie'])
+    end
     description = @event['notification'] || [@event['client']['name'], @event['check']['name'], @event['check']['output'].chomp].join(' : ')
 
     begin
@@ -65,6 +69,7 @@ class Opsgenie < Sensu::Handler
   def post_to_opsgenie(action = :create, params = {})
     params['customerKey'] = @json_config['opsgenie']['customerKey']
     params['recipients']  = @json_config['opsgenie']['recipients']
+    params['teams']  = @json_config['opsgenie']['teams']
 
     # override source if specified, default is ip
     params['source'] = @json_config['source'] if @json_config['source']
