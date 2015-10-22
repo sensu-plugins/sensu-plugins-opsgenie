@@ -59,15 +59,17 @@ class Opsgenie < Sensu::Handler
     tags << 'critical' if event_status == 2
     tags << 'warning' if event_status == 1
 
-    post_to_opsgenie(:create, alias: event_id, message: description, tags: tags.join(','))
+    recipients = @json_config['opsgenie']['recipients'] if @json_config['opsgenie']['recipients']
+    teams = @json_config['opsgenie']['teams'] if @json_config['opsgenie']['teams']
+
+    post_to_opsgenie(:create, alias: event_id, message: description, tags: tags.join(','), recipients: recipients, teams: teams)
   end
 
   def post_to_opsgenie(action = :create, params = {})
     params['customerKey'] = @json_config['opsgenie']['customerKey']
-    params['recipients']  = @json_config['opsgenie']['recipients']
 
     # override source if specified, default is ip
-    params['source'] = @json_config['source'] if @json_config['source']
+    params['source'] = @json_config['opsgenie']['source'] if @json_config['opsgenie']['source']
 
     uripath = (action == :create) ? '' : 'close'
     uri = URI.parse("https://api.opsgenie.com/v1/json/alert/#{uripath}")
