@@ -6,6 +6,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## [Unreleased]
 ### Added
 - Added team support for OpsGenie alerts.
+- Added sensu tags integration.
 
 ### Updated
 - Moved adding "recipients" parameter to JSON content to create_alert function. Recipients parameter is not available for close_alert.
