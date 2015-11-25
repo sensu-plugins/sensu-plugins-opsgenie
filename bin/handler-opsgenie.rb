@@ -62,7 +62,7 @@ class Opsgenie < Sensu::Handler
     tags << 'unknown' if event_status >= 3
     tags << 'critical' if event_status == 2
     tags << 'warning' if event_status == 1
-    event_tags.each { |tag,value| tags << "#{tag}_#{value}" }
+    event_tags.each { |tag, value| tags << "#{tag}_#{value}" }
 
     recipients = @json_config['opsgenie']['recipients'] if @json_config['opsgenie']['recipients']
     teams = @json_config['opsgenie']['teams'] if @json_config['opsgenie']['teams']
