@@ -63,7 +63,7 @@ class Opsgenie < Sensu::Handler
     tags << 'critical' if event_status == 2
     tags << 'warning' if event_status == 1
     unless event_tags.nil?
-      event_tags.each { |tag,value| tags << "#{tag}_#{value}" }
+      event_tags.each { |tag, value| tags << "#{tag}_#{value}" }
     end
 
     recipients = @json_config['opsgenie']['recipients'] if @json_config['opsgenie']['recipients']
