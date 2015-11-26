@@ -18,6 +18,10 @@ class Opsgenie < Sensu::Handler
 
   def handle
     @json_config = JSON.parse(File.open(config[:json_config]).read)
+    # allow config to be changed by the check
+    if @event['check']['opsgenie']
+      @json_config['opsgenie'].merge!(@event['check']['opsgenie'])
+    end
     description = @event['notification'] || [@event['client']['name'], @event['check']['name'], @event['check']['output'].chomp].join(' : ')
 
     begin
