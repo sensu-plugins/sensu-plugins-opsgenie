@@ -51,6 +51,10 @@ class Opsgenie < Sensu::Handler
     post_to_opsgenie(:close, alias: event_id)
   end
 
+  def event_tags
+    @event['client']['tags']
+  end
+
   def create_alert(description)
     tags = []
     tags << @json_config['opsgenie']['tags'] if @json_config['opsgenie']['tags']
@@ -58,6 +62,9 @@ class Opsgenie < Sensu::Handler
     tags << 'unknown' if event_status >= 3
     tags << 'critical' if event_status == 2
     tags << 'warning' if event_status == 1
+    unless event_tags.nil?
+      event_tags.each { |tag, value| tags << "#{tag}_#{value}" }
+    end
 
     recipients = @json_config['opsgenie']['recipients'] if @json_config['opsgenie']['recipients']
     teams = @json_config['opsgenie']['teams'] if @json_config['opsgenie']['teams']
