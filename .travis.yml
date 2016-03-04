@@ -16,13 +16,15 @@ notifications:
     on_failure: always
 script:
 - bundle exec rake default
+- gem build sensu-plugins-opsgenie.gemspec
+- gem install sensu-plugins-opsgenie-*.gem
 deploy:
   provider: rubygems
   api_key:
-    secure: YDmMi+qD41CGdPDd+FSNzW/5Tz5AxiUpMsaUJ0GjSFVm9Mhg7ZnE3IdRP4LaiSd/O2k0ijSPVXUyxRlO65IVimRhA1TjbwOJWAkS0TzH8izf/FG0QItBVDfdWqKEa0H0L4AFwSMLE+U8MzBoZfPXKpywidffJRL52eyyEwI7WxQ=
+    secure: K0vq7Ahny7bZIz1LnilosmNgHG/L4Nv6QuPaxo++/lQ7dWT9puRDLFw/pQI7+Xgb+LBLWFW2ye33q01qd1Cke8nuMKQduxnGeBzzH6fHJiXDcz5uEoKB2a8qdkwHHP3y9fisGaZgyhxlmui3fny3C0JjFizs9oNNYIt3MZcETTk=
   gem: sensu-plugins-opsgenie
   on:
-    tags: true
+    ags: true
     all_branches: true
     rvm: 1.9.3
     rvm: 2.0

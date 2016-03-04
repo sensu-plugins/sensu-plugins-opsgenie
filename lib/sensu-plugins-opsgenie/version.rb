@@ -10,8 +10,8 @@ module SensuPluginsOpsgenie
 
     VER_STRING = [MAJOR, MINOR, PATCH].compact.join('.')
 
-    NAME   = 'sensu-plugins-opsgenie'
-    BANNER = "#{NAME} v%s"
+    NAME   = 'sensu-plugins-opsgenie'.freeze
+    BANNER = "#{NAME} v%s".freeze
 
     module_function
 
