@@ -5,6 +5,11 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 
+## [1.0.0] - 2015-03-30
+### Changed
+- Changed the `-j, --jsonconfig` parameter to specify a key in the already-parsed JSON config file
+- The `-j, --jsonconfig` parameter no longer takes a JSON config file as input
+
 ## [0.0.3] - 2015-11-26
 ### Added
 - Added team support for OpsGenie alerts.
