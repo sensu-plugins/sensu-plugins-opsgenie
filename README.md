@@ -10,13 +10,13 @@
 ## Functionality
 
 ## Files
- * bin/handler-opsgenie.rb
- * bin/check-opsgenie-heartbeat.rb
+ * `bin/handler-opsgenie.rb`
+ * `bin/check-opsgenie-heartbeat.rb`
 
 ## Usage
 
-**handler-opsgenie**
-```
+**`handler-opsgenie`**
+```json
 {
   "opsgenie": {
     "customerKey": "the-key",
@@ -24,7 +24,7 @@
     "recipients": "the-recipients",
     "source": "alert-source",
     "overwrite_quiet_hours": true,
-    "tags": [ "sensu" ]
+    "tags": ["sensu"]
   }
 }
 ```
