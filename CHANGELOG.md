@@ -12,17 +12,17 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - Allow check to override default handler config
 
 ### Updated
-- Moved adding "recipients" parameter to JSON content to create_alert function. Recipients parameter is not available for close_alert.
+- Moved adding `recipients` parameter to JSON content to `create_alert` function. The `recipients` parameter is not available for `close_alert`.
 
 ### Fixed
-- Fixed getting "source" field from JSON.
+- Fixed getting `source` field from JSON.
 
 ## [0.0.2] - 2015-07-14
 ### Changed
-- updated sensu-plugin gem to 1.2.0
+- updated `sensu-plugin` gem to `1.2.0`
 
 ### Removed
-- Remove JSON gem dep that is not longer needed with Ruby 1.9+
+- Remove JSON gem dependency that is not longer needed with Ruby 1.9+
 
 ## 0.0.1 - 2015-06-27
 ### Fixed
