@@ -12,15 +12,15 @@ require 'json'
 class Opsgenie < Sensu::Handler
   option :json_config,
          description: 'Configuration name',
-         short: '-j JSONCONFIG',
-         long: '--json JSONCONFIG',
-         default: 'opsgenie.json'
+         short: '-j <config-name>',
+         long: '--json <config-name>',
+         default: 'opsgenie'
 
   def handle
-    @json_config = JSON.parse(File.open(config[:json_config]).read)
+    @json_config = settings[config[:json_config]]
     # allow config to be changed by the check
     if @event['check']['opsgenie']
-      @json_config['opsgenie'].merge!(@event['check']['opsgenie'])
+      @json_config.merge!(@event['check']['opsgenie'])
     end
     description = @event['notification'] || [@event['client']['name'], @event['check']['name'], @event['check']['output'].chomp].join(' : ')
 
@@ -61,8 +61,8 @@ class Opsgenie < Sensu::Handler
 
   def create_alert(description)
     tags = []
-    tags << @json_config['opsgenie']['tags'] if @json_config['opsgenie']['tags']
-    tags << 'OverwriteQuietHours' if event_status == 2 && @json_config['opsgenie']['overwrite_quiet_hours'] == true
+    tags << @json_config['tags'] if @json_config['tags']
+    tags << 'OverwriteQuietHours' if event_status == 2 && @json_config['overwrite_quiet_hours'] == true
     tags << 'unknown' if event_status >= 3
     tags << 'critical' if event_status == 2
     tags << 'warning' if event_status == 1
@@ -70,17 +70,17 @@ class Opsgenie < Sensu::Handler
       event_tags.each { |tag, value| tags << "#{tag}_#{value}" }
     end
 
-    recipients = @json_config['opsgenie']['recipients'] if @json_config['opsgenie']['recipients']
-    teams = @json_config['opsgenie']['teams'] if @json_config['opsgenie']['teams']
+    recipients = @json_config['recipients'] if @json_config['recipients']
+    teams = @json_config['teams'] if @json_config['teams']
 
     post_to_opsgenie(:create, alias: event_id, message: description, tags: tags.join(','), recipients: recipients, teams: teams)
   end
 
   def post_to_opsgenie(action = :create, params = {})
-    params['customerKey'] = @json_config['opsgenie']['customerKey']
+    params['customerKey'] = @json_config['customerKey']
 
     # override source if specified, default is ip
-    params['source'] = @json_config['opsgenie']['source'] if @json_config['opsgenie']['source']
+    params['source'] = @json_config['source'] if @json_config['source']
 
     uripath = (action == :create) ? '' : 'close'
     uri = URI.parse("https://api.opsgenie.com/v1/json/alert/#{uripath}")
