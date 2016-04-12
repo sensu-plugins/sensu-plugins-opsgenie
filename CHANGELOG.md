@@ -5,10 +5,11 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 
-## [1.0.0] - 2015-03-30
+## [1.0.0] - 2016-04-12
 ### Changed
 - Changed the `-j, --jsonconfig` parameter to specify a key in the already-parsed JSON config file
 - The `-j, --jsonconfig` parameter no longer takes a JSON config file as input
+- Update to rubocop 0.37
 
 ## [0.0.3] - 2015-11-26
 ### Added
@@ -35,6 +36,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - Fixed json configuration load
 
 [Unreleased]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/0.0.3...HEAD
+[1.0.0]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/0.0.3...1.0.0
 [0.0.3]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/0.0.2...0.0.3
 [0.0.2]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/0.0.1...0.0.2
 
