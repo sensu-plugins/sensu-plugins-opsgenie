@@ -4,93 +4,161 @@
 # handler.
 #
 
-require 'sensu-handler'
-require 'net/https'
-require 'uri'
+require 'em-http-request'
 require 'json'
+require 'net/https'
+require 'sensu-handler'
+require 'sensu/daemon'
+require 'sensu/extension'
+require 'timeout'
+require 'uri'
 
-class Opsgenie < Sensu::Handler
-  option :json_config,
-         description: 'Configuration name',
-         short: '-j <config-name>',
-         long: '--json <config-name>',
-         default: 'opsgenie'
+module Sensu::Extension
+  class Opsgenie < Handler
+    include Sensu::Daemon
 
-  def handle
-    @json_config = settings[config[:json_config]]
-    # allow config to be changed by the check
-    if @event['check']['opsgenie']
-      @json_config.merge!(@event['check']['opsgenie'])
+    def name
+      'opsgenie'
     end
-    message = @event['notification'] || [@event['client']['name'], @event['check']['name'], @event['check']['output'].chomp].join(' : ')
 
-    begin
-      timeout(30) do
-        response = case @event['action']
-                   when 'create'
-                     create_alert(message)
-                   when 'resolve'
-                     close_alert
-                   end
-        if response['code'] == 200
-          puts 'opsgenie -- ' + @event['action'].capitalize + 'd incident -- ' + event_id
-        else
-          puts 'opsgenie -- failed to ' + @event['action'] + ' incident -- ' + event_id
-        end
+    def description
+      'Passes events to OpsGenie'
+    end
+
+    def definition
+      {
+        type: 'extension',
+        name: 'opsgenie',
+      }
+    end
+
+    def logger
+      Sensu::Logger.get
+    end
+
+    def initialize
+      super
+
+      @config = @settings[:opsgenie]
+
+      @api_url = 'https://api.opsgenie.com'
+
+      @request_options = {
+        :connect_timeout => 10,
+        :inactivity_timeout => 10,
+
+        :ssl => {
+          :verify_peer => false,
+        },
+
+        :head => {
+          'Content-Type' => 'application/json',
+        },
+      }
+    end
+
+    def run(event)
+      begin
+        event = JSON.parse(event) if event.class == String
+      rescue JSON::ParserError
+        @logger.error("#{name}: failed to parse json: #{event}")
       end
-    rescue Timeout::Error
-      puts 'opsgenie -- timed out while attempting to ' + @event['action'] + ' a incident -- ' + event_id
+
+      # allow @config to be changed by the check
+      if event.key?('check') && event['check'].key?('opsgenie') && event['check']['opsgenie']
+        @config.merge!(event['check']['opsgenie'])
+      end
+      message = event['notification'] || [event['client']['name'],
+                                          event['check']['name'],
+                                          event['check']['output'].chomp].join(' : ')
+
+      response = case event['action']
+                 when 'create'
+                   create_alert(event, message)
+                 when 'resolve'
+                   close_alert(event)
+                 end
+
+      msg_event = "#{event['action']} '#{event_id(event)}'"
+
+      # Failed connection such as timeout or bad DNS
+      response.errback do
+        msg = "#{name}: connection failure: #{msg_event}, error: #{response.error}"
+        @logger.error(msg)
+        yield msg, 2
+      end
+
+      response.callback do |http|
+
+        if http.response_header.status == 200
+          msg = "#{name}: request success: #{msg_event}"
+          @logger.debug(msg)
+          yield msg, 0
+        else
+          msg = "#{name}: request failure: #{msg_event}, " +
+                "code: #{http.response_header.status}, response: #{http.response}"
+          @logger.error(msg)
+          yield msg, 2
+        end
+
+      end
     end
-  end
 
-  def event_id
-    @event['client']['name'] + '/' + @event['check']['name']
-  end
-
-  def event_status
-    @event['check']['status']
-  end
-
-  def close_alert
-    post_to_opsgenie(:close, alias: event_id)
-  end
-
-  def event_tags
-    @event['client']['tags']
-  end
-
-  def create_alert(message)
-    tags = []
-    tags << @json_config['tags'] if @json_config['tags']
-    tags << 'OverwriteQuietHours' if event_status == 2 && @json_config['overwrite_quiet_hours'] == true
-    tags << 'unknown' if event_status >= 3
-    tags << 'critical' if event_status == 2
-    tags << 'warning' if event_status == 1
-    unless event_tags.nil?
-      event_tags.each { |tag, value| tags << "#{tag}_#{value}" }
+    def event_id(event)
+      event['client']['name'] + '/' + event['check']['name']
     end
 
-    description = @json_config['description'] if @json_config['description']
-    recipients = @json_config['recipients'] if @json_config['recipients']
-    teams = @json_config['teams'] if @json_config['teams']
+    def event_status(event)
+      event['check']['status']
+    end
 
-    post_to_opsgenie(:create, alias: event_id, message: message, description: description, tags: tags.join(','), recipients: recipients, teams: teams)
-  end
+    def close_alert(event)
+      post_to_opsgenie(:close, alias: event_id(event))
+    end
 
-  def post_to_opsgenie(action = :create, params = {})
-    params['customerKey'] = @json_config['customerKey']
+    def event_tags(event)
+      event['client']['tags']
+    end
 
-    # override source if specified, default is ip
-    params['source'] = @json_config['source'] if @json_config['source']
+    def create_alert(event, message)
+      tags = []
+      tags << @config['tags'] if @config['tags']
+      tags << 'OverwriteQuietHours' if event_status(event) == 2 && @config['overwrite_quiet_hours'] == true
+      tags << 'unknown' if event_status(event) >= 3
+      tags << 'critical' if event_status(event) == 2
+      tags << 'warning' if event_status(event) == 1
+      unless event_tags(event).nil?
+        event_tags(event).each { |tag, value| tags << "#{tag}_#{value}" }
+      end
 
-    uripath = (action == :create) ? '' : 'close'
-    uri = URI.parse("https://api.opsgenie.com/v1/json/alert/#{uripath}")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    request = Net::HTTP::Post.new(uri.request_uri, 'Content-Type' => 'application/json')
-    request.body = params.to_json
-    response = http.request(request)
-    JSON.parse(response.body)
+      description = @config['description'] if @config['description']
+      recipients = @config['recipients'] if @config['recipients']
+      teams = @config['teams'] if @config['teams']
+
+      post_to_opsgenie(action: :create,
+                       alias: event_id,
+                       message: message,
+                       description: description,
+                       tags: tags.join(','),
+                       recipients: recipients,
+                       teams: teams)
+    end
+
+    def post_to_opsgenie(action = :create, **params)
+      params['customerKey'] = @config['customerKey']
+
+      # override source if specified, default is ip
+      params['source'] = @config['source'] if @config['source']
+
+      uripath = (action == :create) ? '' : 'close'
+      path = "/v1/json/alert/#{uripath}"
+
+      @logger.debug("#{name}: making request: '#{path}' body: #{params}")
+
+      EventMachine.run do
+        EventMachine::HttpRequest.new(@api_url, @request_options).post(
+          :path => path, :body => params.to_json)
+      end
+    end
   end
 end
