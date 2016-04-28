@@ -22,13 +22,13 @@ class Opsgenie < Sensu::Handler
     if @event['check']['opsgenie']
       @json_config.merge!(@event['check']['opsgenie'])
     end
-    description = @event['notification'] || [@event['client']['name'], @event['check']['name'], @event['check']['output'].chomp].join(' : ')
+    message = @event['notification'] || [@event['client']['name'], @event['check']['name'], @event['check']['output'].chomp].join(' : ')
 
     begin
       timeout(30) do
         response = case @event['action']
                    when 'create'
-                     create_alert(description)
+                     create_alert(message)
                    when 'resolve'
                      close_alert
                    end
@@ -59,7 +59,7 @@ class Opsgenie < Sensu::Handler
     @event['client']['tags']
   end
 
-  def create_alert(description)
+  def create_alert(message)
     tags = []
     tags << @json_config['tags'] if @json_config['tags']
     tags << 'OverwriteQuietHours' if event_status == 2 && @json_config['overwrite_quiet_hours'] == true
@@ -70,10 +70,11 @@ class Opsgenie < Sensu::Handler
       event_tags.each { |tag, value| tags << "#{tag}_#{value}" }
     end
 
+    description = @json_config['description'] if @json_config['description']
     recipients = @json_config['recipients'] if @json_config['recipients']
     teams = @json_config['teams'] if @json_config['teams']
 
-    post_to_opsgenie(:create, alias: event_id, message: description, tags: tags.join(','), recipients: recipients, teams: teams)
+    post_to_opsgenie(:create, alias: event_id, message: message, description: description, tags: tags.join(','), recipients: recipients, teams: teams)
   end
 
   def post_to_opsgenie(action = :create, params = {})
