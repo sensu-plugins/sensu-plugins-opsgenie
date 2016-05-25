@@ -64,43 +64,65 @@ module Sensu::Extension
         @logger.error("#{name}: failed to parse json: #{event}")
       end
 
-      # allow @config to be changed by the check
-      if event.key?('check') && event['check'].key?('opsgenie') && event['check']['opsgenie']
-        @config.merge!(event['check']['opsgenie'])
-      end
-      message = event['notification'] || [event['client']['name'],
-                                          event['check']['name'],
-                                          event['check']['output'].chomp].join(' : ')
+      status_changed = false
 
-      response = case event['action']
-                 when 'create'
-                   create_alert(event, message)
-                 when 'resolve'
-                   close_alert(event)
-                 end
+      if event
+        event = JSON.parse(event['event']) if event['event'].class == String
 
-      msg_event = "#{event['action']} '#{event_alias(event)}'"
+        if (event &&
+            event.key?('check') &&
+            event['check'].key?('status') &&
+            event['check'].key?('history'))
 
-      # Failed connection such as timeout or bad DNS
-      response.errback do
-        msg = "#{name}: connection failure: #{msg_event}, error: #{response.error}"
-        @logger.error(msg)
-        yield msg, 2
+          status = event['check']['status'].to_i
+          prev_status = if event['check']['history'].length >= 2
+                        then event['check']['history'][-2].to_i
+                        else status end
+          status_changed = status != prev_status
+        end
       end
 
-      response.callback do |http|
+      if status_changed
 
-        if http.response_header.status == 200
-          msg = "#{name}: request success: #{msg_event}"
-          @logger.debug(msg)
-          yield msg, 0
-        else
-          msg = "#{name}: request failure: #{msg_event}, " +
-                "code: #{http.response_header.status}, response: #{http.response}"
+        @config = @settings[:opsgenie]
+        # allow @config to be changed by the check
+        if event.key?('check') && event['check'].key?('opsgenie') && event['check']['opsgenie']
+          @config.merge!(event['check']['opsgenie'])
+        end
+        message = event['notification'] || [event['client']['name'],
+                                            event['check']['name'],
+                                            event['check']['output'].chomp].join(' : ')
+
+        response = case event['action']
+                   when 'create'
+                     create_alert(event, message)
+                   when 'resolve'
+                     close_alert(event)
+                   end
+
+        msg_event = "#{event['action']} '#{event_alias(event)}'"
+
+        # Failed connection such as timeout or bad DNS
+        response.errback do
+          msg = "#{name}: connection failure: #{msg_event}, error: #{response.error}"
           @logger.error(msg)
           yield msg, 2
         end
 
+        response.callback do |http|
+
+          if http.response_header.status == 200
+            msg = "#{name}: request success: #{msg_event}"
+            @logger.debug(msg)
+            yield msg, 0
+          else
+            msg = "#{name}: request failure: #{msg_event}, " +
+                  "code: #{http.response_header.status}, response: #{http.response}"
+            @logger.error(msg)
+            yield msg, 2
+          end
+
+        end
       end
     end
 
