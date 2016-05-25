@@ -123,6 +123,10 @@ module Sensu::Extension
           end
 
         end
+      else
+        msg = "#{name}: avoided handling for host '#{event['client']['name']}' due to unchanged status"
+        @logger.debug(msg)
+        yield msg, 0
       end
     end
 
