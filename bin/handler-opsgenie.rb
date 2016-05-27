@@ -29,6 +29,9 @@ module Sensu::Extension
       {
         type: 'extension',
         name: 'opsgenie',
+        filters: [
+          'filter-ttl-keepalive',
+        ],
       }
     end
 
