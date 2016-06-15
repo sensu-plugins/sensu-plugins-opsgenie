@@ -26,16 +26,19 @@ class Opsgenie < Sensu::Handler
 
     begin
       timeout(30) do
-        response = case @event['action']
-                   when 'create'
-                     create_alert(message)
-                   when 'resolve'
-                     close_alert
-                   end
-        if response['code'] == 200
-          puts 'opsgenie -- ' + @event['action'].capitalize + 'd incident -- ' + event_id
+        response, ok_messages = case @event['action']
+                                  when 'create'
+                                    # if alert with alias exists (non closed), 201 is returned
+                                    [create_alert(message), {'200' => 'Alert created', '201' => 'Open alert already exists'}]
+                                  when 'resolve'
+                                    # if alert with alias not exists (closed or deleted), 5 is returned
+                                    [close_alert, {'200' => 'Alert closed', '5' => 'Alert already closed'}]
+                                end
+        msg = ok_messages[response['code'].to_s]
+        if msg
+          puts 'opsgenie -- ' + @event['action'].capitalize + 'd incident -- ' + event_id + ' -- ' + msg
         else
-          puts 'opsgenie -- failed to ' + @event['action'] + ' incident -- ' + event_id
+          puts 'opsgenie -- failed to ' + @event['action'] + ' incident -- ' + event_id + ' -- ' + response.to_s
         end
       end
     rescue Timeout::Error
