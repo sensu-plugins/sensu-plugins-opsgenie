@@ -59,6 +59,10 @@ class Opsgenie < Sensu::Handler
     @event['client']['tags']
   end
 
+  def client_name
+    @event['client']['name']
+  end
+
   def create_alert(message)
     tags = []
     tags << @json_config['tags'] if @json_config['tags']
@@ -74,7 +78,14 @@ class Opsgenie < Sensu::Handler
     recipients = @json_config['recipients'] if @json_config['recipients']
     teams = @json_config['teams'] if @json_config['teams']
 
-    post_to_opsgenie(:create, alias: event_id, message: message, description: description, tags: tags.join(','), recipients: recipients, teams: teams)
+    post_to_opsgenie(:create,
+                     alias: event_id,
+                     message: message,
+                     description: description,
+                     entity: client_name,
+                     tags: tags.join(','),
+                     recipients: recipients,
+                     teams: teams)
   end
 
   def post_to_opsgenie(action = :create, params = {})
