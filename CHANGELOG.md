@@ -6,6 +6,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## [Unreleased]
 ### Added
 - Added description support for OpsGenie alerts.
+- Report the client name as `entity` to OpsGenie
 
 ## [1.0.0] - 2016-04-12
 ### Changed
