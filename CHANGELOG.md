@@ -5,8 +5,15 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 ### Added
-- Added description support for OpsGenie alerts.
-- Report the client name as `entity` to OpsGenie
+- Added description support for OpsGenie alerts (@mnellemann)
+- Report the client name as `entity` to OpsGenie (@steti)
+- Support for Ruby 2.3.0
+
+### Changed
+- Update to Rubocop 0.40 and cleanup
+
+### Removed
+- Support for Ruby 1.9.3
 
 ## [1.0.0] - 2016-04-12
 ### Changed
