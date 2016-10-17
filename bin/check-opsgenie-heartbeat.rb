@@ -1,6 +1,6 @@
 #! /usr/bin/env ruby
 #
-#   check-opsgenie-heatbeat
+#   check-opsgenie-heartbeat
 #
 # DESCRIPTION:
 #   Sends heartbeat signal to Opsgenie. If Opsgenie does not receive one at least every 10 minutes
