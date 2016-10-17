@@ -1,9 +1,9 @@
 #! /usr/bin/env ruby
 #
-#   opsgenie-heatbeat
+#   check-opsgenie-heatbeat
 #
 # DESCRIPTION:
-#   Sends heartbeat signal to Opsgenie. If Opsgenie does not receive one atleast every 10 minutes
+#   Sends heartbeat signal to Opsgenie. If Opsgenie does not receive one at least every 10 minutes
 #   it will alert. Fails with a warning if heartbeat is not configured in the Opsgenie admin
 #   interface.
 #
@@ -20,7 +20,7 @@
 #   gem: net-https
 #
 # USAGE:
-#   #YELLOW
+#   check-opsgenie-heartbeat.rb -k aaaaaa-bbbb-cccc-dddd-eeeeeeeee -n 'My Awesome Heartbeat'
 #
 # NOTES:
 #   Recommended plugin interval: 200 and occurences: 3
