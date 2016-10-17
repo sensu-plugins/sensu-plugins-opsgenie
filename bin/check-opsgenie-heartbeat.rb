@@ -57,7 +57,7 @@ class OpsgenieHeartbeat < Sensu::Plugin::Check::CLI
          default: 10
 
   def run
-    timeout(config[:timeout]) do
+    Timeout.timeout(config[:timeout]) do
       response = opsgenie_heartbeat
       puts response
       case response['code']

@@ -25,7 +25,7 @@ class Opsgenie < Sensu::Handler
     message = @event['notification'] || [@event['client']['name'], @event['check']['name'], @event['check']['output'].chomp].join(' : ')
 
     begin
-      timeout(30) do
+      Timeout.timeout(30) do
         response = case @event['action']
                    when 'create'
                      create_alert(message)
