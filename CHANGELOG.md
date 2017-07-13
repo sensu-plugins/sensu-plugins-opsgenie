@@ -7,6 +7,9 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Added
 - Testing on Ruby 2.4.1
 
+### Breaking Changes
+- Bump sensu-plugin version to 2.0 for Ruby 2.4.1 compatability
+
 ## [2.0.1] - 2016-10-17
 ### Fixed
 - Fix deprecated `timeout` warnings
