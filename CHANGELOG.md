@@ -5,6 +5,12 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 
+## [3.1.0] - 2017-11-07
+### Added
+- Added `-f, --format` parameter to be able to specify a custom message format
+- Added possibility to specify custom timeout
+- Some cleanup and minor refactorings
+
 ## [3.0.0] - 2017-07-13
 ### Added
 - Testing on Ruby 2.4.1
