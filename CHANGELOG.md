@@ -4,10 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
-
-## [3.1.0] - 2017-11-07
 ### Added
-- Added `-f, --format` parameter to be able to specify a custom message format
+- Added optional `-t, --template` parameter to specify the location of a ERB template file
 - Added possibility to specify custom timeout
 - Some cleanup and minor refactorings
 
