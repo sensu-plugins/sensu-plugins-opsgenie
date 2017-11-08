@@ -8,9 +8,10 @@ require 'sensu-handler'
 require 'net/https'
 require 'uri'
 require 'json'
+require 'erb'
 
 class Opsgenie < Sensu::Handler
-  attr_reader :json_config, :message_format
+  attr_reader :json_config, :message_template
 
   OPSGENIE_URL = 'https://api.opsgenie.com/v1/json/alert'.freeze
 
@@ -20,10 +21,10 @@ class Opsgenie < Sensu::Handler
          long: '--json <config-name>',
          default: 'opsgenie'
 
-  option :message_format,
-         description: "Custom message format, eg: 'Custom: <<check_output>>:<<check_name>>:<<client_name>>'",
-         short: '-f <format>',
-         long:  '--format <format>',
+  option :message_template,
+         description: 'Location of custom erb template for advanced message formatting',
+         short: '-t <file_path>',
+         long:  '--template <file_path>',
          default: nil
 
   def handle
@@ -34,8 +35,8 @@ class Opsgenie < Sensu::Handler
   private
 
   def init
-    @json_config    = settings[config[:json_config]] || {}
-    @message_format = config[:message_format]
+    @json_config      = settings[config[:json_config]] || {}
+    @message_template = config[:message_template]
     # allow config to be changed by the check
     json_config.merge!(@event['check']['opsgenie']) if @event['check']['opsgenie']
   end
@@ -61,17 +62,14 @@ class Opsgenie < Sensu::Handler
 
   def message
     return @event['notification'] unless @event['notification'].nil?
-    return default_message if message_format.nil?
+    return default_message if message_template.nil? || !File.exist?(message_template)
     custom_message
   rescue StandardError
     default_message
   end
 
   def custom_message
-    message_format.gsub(/\<{2}\w+\>{2}/) do |value|
-      keys = value[2...-2].split('_')
-      @event[keys[0]][keys[1]]
-    end
+    ERB.new(File.read(message_template)).result(binding)
   end
 
   def default_message
