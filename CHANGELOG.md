@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+## [3.1.0] - 2017-11-12
 ### Added
 - Added optional `-t, --template` parameter to specify the location of a ERB template file
 - Added possibility to specify custom timeout
@@ -62,7 +64,8 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - initial release
 - Fixed json configuration load
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/3.0.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/3.1.0...HEAD
+[3.1.0]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/3.0.0...3.1.0
 [3.0.0]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/2.0.1...3.0.0
 [2.0.1]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/1.0.0...2.0.0
