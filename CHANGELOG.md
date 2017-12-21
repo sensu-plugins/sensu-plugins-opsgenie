@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+- Use Heartbeat v2 API
 
 ## [3.1.0] - 2017-11-12
 ### Added
