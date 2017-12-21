@@ -60,8 +60,9 @@ class OpsgenieHeartbeat < Sensu::Plugin::Check::CLI
     Timeout.timeout(config[:timeout]) do
       response = opsgenie_heartbeat
       puts response
-      case response['code']
-      when 200
+      case response.code.to_s
+      when '200', '202'
+        puts JSON.parse(response.body)
         ok 'heartbeat sent'
       when 8
         warning 'heartbeat not enabled'
@@ -74,17 +75,12 @@ class OpsgenieHeartbeat < Sensu::Plugin::Check::CLI
   end
 
   def opsgenie_heartbeat
-    params = {}
-    params['apiKey'] = config[:api_key]
-    params['name'] = config[:name]
-
-    uri = URI.parse('https://api.opsgenie.com/v1/json/heartbeat/send')
+    encoded_name = URI.escape(config[:name])
+    uri = URI.parse("https://api.opsgenie.com/v2/heartbeats/#{encoded_name}/ping")
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    request = Net::HTTP::Post.new(uri.request_uri, 'Content-Type' => 'application/json')
-    request.body = params.to_json
-    response = http.request(request)
-    JSON.parse(response.body)
+    request = Net::HTTP::Post.new(uri.request_uri, 'Authorization' => "GenieKey #{config[:api_key]}")
+    http.request(request)
   end
 end
