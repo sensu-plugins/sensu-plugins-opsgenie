@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+## [4.0.0] - 2017-12-22
 ### Fixed
 - Use Heartbeat v2 API, as the Heartbeat v1 API is no longer available (@Castaglia)
 
@@ -72,7 +74,8 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - initial release
 - Fixed json configuration load
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/3.1.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.0.0...HEAD
+[4.0.0]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/3.1.0...4.0.0
 [3.1.0]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/3.0.0...3.1.0
 [3.0.0]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/2.0.1...3.0.0
 [2.0.1]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/2.0.0...2.0.1
