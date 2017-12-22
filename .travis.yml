@@ -19,6 +19,7 @@ script:
 - bundle exec rake default
 - gem build sensu-plugins-opsgenie.gemspec
 - gem install sensu-plugins-opsgenie-*.gem
+- kitchen test
 deploy:
   provider: rubygems
   api_key:

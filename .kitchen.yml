@@ -1,0 +1,17 @@
+driver:
+  name: vagrant
+  gui: false
+
+provisioner:
+  name: shell
+  data_path: .
+  script: test/fixtures/bootstrap.sh
+
+platforms:
+  - name: ubuntu-14.04
+
+busser:
+  ruby_bindir: /usr/bin
+
+suites:
+  - name: default
