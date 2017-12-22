@@ -1,17 +1,29 @@
+---
 driver:
-  name: vagrant
-  gui: false
+  name: docker
+  use_sudo: false
 
 provisioner:
   name: shell
   data_path: .
   script: test/fixtures/bootstrap.sh
 
-platforms:
-  - name: ubuntu-14.04
+verifier:
+  ruby_bindir: /usr/local/bin
 
-busser:
-  ruby_bindir: /usr/bin
+platforms:
+  - name: debian-8
 
 suites:
-  - name: default
+  - name: ruby-21
+    driver:
+      image: ruby:2.1-slim
+  - name: ruby-22
+    driver:
+      image: ruby:2.2-slim
+  - name: ruby-230
+    driver:
+      image: ruby:2.3.0-slim
+  - name: ruby-241
+    driver:
+      image: ruby:2.4.1-slim

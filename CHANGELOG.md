@@ -5,7 +5,13 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 ### Fixed
-- Use Heartbeat v2 API, as the Heartbeat v1 API is no longer available
+- Use Heartbeat v2 API, as the Heartbeat v1 API is no longer available (@Castaglia)
+
+### Breaking Changes
+- drop support and testing for ruby 2.0 as it's EOL (@majormoses)
+
+### Added
+- integration testing with `test-kitchen`, `kitchen-docker`, and `serverspec` (@Castaglia) (@majormoses)
 
 ## [3.1.0] - 2017-11-12
 ### Added

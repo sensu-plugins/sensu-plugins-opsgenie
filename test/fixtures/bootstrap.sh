@@ -1,11 +1,8 @@
 #!/bin/bash
 set -e
 
-apt-get install software-properties-common
-apt-add-repository -y ppa:brightbox/ruby-ng
 apt-get update
-apt-get install -y build-essential
-apt-get install -y ruby2.4 ruby2.4-dev
+# apt-get install -y build-essential
 
 source /etc/profile
 DATA_DIR=/tmp/kitchen/data
