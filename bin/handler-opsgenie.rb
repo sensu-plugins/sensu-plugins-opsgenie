@@ -13,7 +13,7 @@ require 'erb'
 class Opsgenie < Sensu::Handler
   attr_reader :json_config, :message_template
 
-  OPSGENIE_URL = 'https://api.opsgenie.com/v1/json/alert'.freeze
+  OPSGENIE_URL = 'https://api.opsgenie.com/v2/alerts'.freeze
 
   option :json_config,
          description: 'Configuration name',
@@ -50,10 +50,16 @@ class Opsgenie < Sensu::Handler
                  when 'resolve'
                    close_alert
                  end
-      if response['code'] == 200
+      case response.code.to_s
+      when '200', '202'
         puts 'opsgenie -- ' + @event['action'].capitalize + 'd incident -- ' + event_id
+      when '401'
+        puts 'opsgenie -- failed to ' + @event['action'] + ' incident -- not authorized'
+      when '404'
+        puts 'opsgenie -- failed to ' + @event['action'] + ' incident -- ' + event_id + ' not found'
       else
         puts 'opsgenie -- failed to ' + @event['action'] + ' incident -- ' + event_id
+        puts "HTTP #{response.code} #{response.message}: #{response.body}"
       end
     end
   rescue Timeout::Error
@@ -77,7 +83,10 @@ class Opsgenie < Sensu::Handler
   end
 
   def event_id
-    @event['client']['name'] + '/' + @event['check']['name']
+    # Do not use slashes in the event ID, as this alias becomes part of the URI
+    # in the RESTful interactions with OpsGenie; use characters which can be
+    # easily embedded into a URI.
+    @event['client']['name'] + ':' + @event['check']['name']
   end
 
   def event_status
@@ -102,7 +111,7 @@ class Opsgenie < Sensu::Handler
                      message:     message,
                      description: json_config['description'],
                      entity:      client_name,
-                     tags:        tags.join(','),
+                     tags:        tags,
                      recipients:  json_config['recipients'],
                      teams:       json_config['teams'])
   end
@@ -119,19 +128,17 @@ class Opsgenie < Sensu::Handler
   end
 
   def post_to_opsgenie(action = :create, params = {})
-    params['customerKey'] = json_config['customerKey']
-
     # override source if specified, default is ip
     params['source'] = json_config['source'] if json_config['source']
 
-    uripath = (action == :create) ? '' : 'close'
+    encoded_alias = URI.escape(params[:alias])
+    uripath = (action == :create) ? '' : "#{encoded_alias}/close?identifierType=alias"
     uri = URI.parse("#{OPSGENIE_URL}/#{uripath}")
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    request = Net::HTTP::Post.new(uri.request_uri, 'Content-Type' => 'application/json')
+    request = Net::HTTP::Post.new(uri.request_uri, 'Authorization' => "GenieKey #{json_config['customerKey']}", 'Content-Type' => 'application/json')
     request.body = params.to_json
-    response = http.request(request)
-    JSON.parse(response.body)
+    http.request(request)
   end
 end
