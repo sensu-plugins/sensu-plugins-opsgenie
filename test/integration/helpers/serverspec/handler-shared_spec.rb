@@ -46,11 +46,11 @@ resolve_alert[:action] = 'resolve'
 # expected failure cases.
 
 describe 'handler-opsgenie' do
-  describe command("echo "#{create_alert} | #{handler}") do
+  describe command("echo #{create_alert} | #{handler}") do
     its(:stdout) { should match(/failed to create incident.*not authorized/) }
   end
 
-  describe command("echo "#{resolve_alert} | #{handler}") do
+  describe command("echo #{resolve_alert} | #{handler}") do
     its(:stdout) { should match(/failed to resolve incident.*not authorized/) }
   end
 end
