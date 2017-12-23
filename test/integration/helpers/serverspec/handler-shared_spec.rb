@@ -13,12 +13,12 @@ create_alert = {
     :address => '127.0.0.1',
     :subscriptions => %w[
       all
-    ]
+    ],
     :timestamp => 1326390159
   },
   :check => {
     :name => name,
-    :issued => 1326390169
+    :issued => 1326390169,
     :output => "HTTP CRITICAL: HTTP/1.1 503 Service Temporarily Unavailable - pattern not found - 593 bytes in 0.001 second response time |time=0.000500s;;;0.000000 size=593B;;;0\n",
     :status => 2,
     :notification => 'Smoke Check failed',
