@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Fixed
+- Use Alert v2 API, as the Alert v1 API is deprecated (@Castaglia)
 
 ## [4.0.0] - 2017-12-22
 ### Fixed
