@@ -83,7 +83,7 @@ class Opsgenie < Sensu::Handler
   end
 
   def event_id
-    return @event['check']['alias'] unless @event['check']['alias'].nil?
+    return @event['check']['opsgenie']['alias'] unless (@event['check']['opsgenie'].nil? or @event['check']['opsgenie']['alias'].nil?)
 
     # Do not use slashes in the event ID, as this alias becomes part of the URI
     # in the RESTful interactions with OpsGenie; use characters which can be

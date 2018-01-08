@@ -85,7 +85,8 @@ If the check definition uses the custom `alias` attribute, _e.g._:
 {
   "checks": {
     "check_mysql_access": {
-      "alias": "MyCustomAlias",
+      "opsgenie": {
+        "alias": "MyCustomAlias",
 
 ```
 then the `handler-opsgenie.rb` handler will use that attribute value as the
@@ -121,7 +122,10 @@ We can define a custom `alias` attribute in this check:
       "interval": 60,
       "handlers": [ "opsgenie" ],
       "standalone": true,
-      "alias": "mysqldb"
+
+      "opsgenie": {
+        "alias": "mysqldb"
+      }
     }
   }
 ```
