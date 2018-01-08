@@ -54,7 +54,7 @@ class Opsgenie < Sensu::Handler
       when '200', '202'
         puts 'opsgenie -- ' + @event['action'].capitalize + 'd incident -- ' + event_id
       when '401'
-        puts 'opsgenie -- failed to ' + @event['action'] + ' incident -- not authorized'
+        puts 'opsgenie -- failed to ' + @event['action'] + ' incident -- ' + event_id + ': not authorized'
       when '404'
         puts 'opsgenie -- failed to ' + @event['action'] + ' incident -- ' + event_id + ' not found'
       else
@@ -83,6 +83,8 @@ class Opsgenie < Sensu::Handler
   end
 
   def event_id
+    return @event['check']['alias'] unless @event['check']['alias'].nil?
+
     # Do not use slashes in the event ID, as this alias becomes part of the URI
     # in the RESTful interactions with OpsGenie; use characters which can be
     # easily embedded into a URI.
