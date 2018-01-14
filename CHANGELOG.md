@@ -1,11 +1,16 @@
-#Change Log
+# Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
+This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+## [4.1.0] 2018-01-14
 ### Added
-- Added possibility to specify custom alias for event ID (@Castaglia)
+- Added possibility to specify custom alias for event ID, this acts in a similar way to proxy/JIT clients to dedupe alerts (@Castaglia)
+
+### Changed
+- updated Changelog guidelines location (@majormoses)
 
 ## [4.0.1] - 2018-01-06
 ### Fixed
@@ -80,7 +85,8 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - initial release
 - Fixed json configuration load
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.0.1...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.1.0...HEAD
+[4.1.0]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.0.1...4.1.0
 [4.0.1]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/3.1.0...4.0.0
 [3.1.0]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/3.0.0...3.1.0
