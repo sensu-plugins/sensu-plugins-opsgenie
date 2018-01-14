@@ -28,3 +28,19 @@ RegexpLiteral:
 
 Style/Documentation:
   Enabled: false
+
+# TODO: come back and decide if we can/should use CGI.escape or some other library
+# or method, while URI.escape was marked as "obsolete" in ruby trunk it is
+# still present and they have not provided a 1 to 1 replacement depending on
+# the use case there are different libraries and methods that are options but
+# there are some differecnces between them and I am hesistent to introduce a
+# bug just waiting to happen. Ideally someone with an opsgenie account and
+# setup can come back at some point and do some testing to see if using the
+# different encoding breaks anything on the api side. The differences I have
+# seen so far replace spaces with '+' rather than '%20' and '/' as '%20'.
+# There might be other libraries, the best I have found so far is Addressable
+# http://www.rubydoc.info/gems/addressable/2.2.4/Addressable/URI#encode-class_method
+# but I did not want to introduce dangerous changes and new dependencies here.
+# https://github.com/sporkmonger/addressable/tree/addressable-2.5.2#install
+Lint/UriEscapeUnescape:
+  Enabled: false

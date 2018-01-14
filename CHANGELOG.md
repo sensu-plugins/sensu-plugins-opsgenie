@@ -5,6 +5,12 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+### Security
+- updated rubocop dependency to `~> 0.51.0` per: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-8418. (@majormoses)
+
+### Changed
+- appease the cops, left TODO for investigating `URI.escape` alternatives (@majormoses)
+
 ## [4.1.0] 2018-01-14
 ### Added
 - Added possibility to specify custom alias for event ID, this acts in a similar way to proxy/JIT clients to dedupe alerts (@Castaglia)

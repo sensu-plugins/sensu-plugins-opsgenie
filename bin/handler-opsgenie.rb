@@ -134,7 +134,16 @@ class Opsgenie < Sensu::Handler
     params['source'] = json_config['source'] if json_config['source']
 
     encoded_alias = URI.escape(params[:alias])
-    uripath = (action == :create) ? '' : "#{encoded_alias}/close?identifierType=alias"
+    # TODO: come back and asses if this logic is correct, I left it functionally
+    # as it was originally written but I suspect we should have at least three
+    # cases to check: create, close, and else for catching errors but I don't
+    # really know the opsgenie API and am not terribly motivated to look into it
+    # right now.
+    uripath = if action == :create
+                ''
+              else
+                "#{encoded_alias}/close?identifierType=alias"
+              end
     uri = URI.parse("#{OPSGENIE_URL}/#{uripath}")
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
