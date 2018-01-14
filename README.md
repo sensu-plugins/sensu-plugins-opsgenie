@@ -79,3 +79,56 @@ To get this to work you need to specify a few different things. For a list of fi
 ```
 
 ## Notes
+
+If the check definition uses the custom `alias` attribute, _e.g._:
+```
+{
+  "checks": {
+    "check_mysql_access": {
+      "opsgenie": {
+        "alias": "MyCustomAlias",
+
+```
+then the `handler-opsgenie.rb` handler will use that attribute value as the
+OpsGenie event ID.  This can be useful for alert deduplication; checks on
+different clients for the same downstream resource can specify the same
+`alias` attribute, so that multiple alerts for the same resource are
+de-duplicated.
+
+By default, `handler-opsgenie.rb` creates an event ID from the client name
+and the check name.  Thus:
+```
+{
+  "checks": {
+    "check_mysql_access": {
+      "command": "/opt/sensu/embedded/bin/check-database.rb -h mysqldb",
+      "interval": 60,
+      "handlers": [ "opsgenie" ],
+      "standalone": true
+    }
+  }
+```
+running on a client named `web01` will create an alert using an event ID of
+`web01:check_mysql_access`.  And on a client named `web02`, it would create an
+alert with a _different_ event ID of `web02:check_mysql_access`, even though
+the `mysqldb` server being checked is the same for these clients.
+
+We can define a custom `alias` attribute in this check:
+```
+{
+  "checks": {
+    "check_mysql_access": {
+      "command": "/opt/sensu/embedded/bin/check-database.rb -h mysqldb",
+      "interval": 60,
+      "handlers": [ "opsgenie" ],
+      "standalone": true,
+
+      "opsgenie": {
+        "alias": "mysqldb"
+      }
+    }
+  }
+```
+And with this, running on multiple clients, any alerts would be generated
+with the same event ID of `mysqldb`, by using that `alias` attribute as the
+event ID.

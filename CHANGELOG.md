@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Added
+- Added possibility to specify custom alias for event ID (@Castaglia)
 
 ## [4.0.1] - 2018-01-06
 ### Fixed

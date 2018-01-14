@@ -52,18 +52,18 @@ class Opsgenie < Sensu::Handler
                  end
       case response.code.to_s
       when '200', '202'
-        puts 'opsgenie -- ' + @event['action'].capitalize + 'd incident -- ' + event_id
+        puts "opsgenie -- #{@event['action'].capitalize}d incident -- #{event_id}"
       when '401'
-        puts 'opsgenie -- failed to ' + @event['action'] + ' incident -- not authorized'
+        puts "opsgenie -- failed to #{@event['action']} incident -- #{event_id}: not authorized"
       when '404'
-        puts 'opsgenie -- failed to ' + @event['action'] + ' incident -- ' + event_id + ' not found'
+        puts "opsgenie -- failed to #{@event['action']} incident -- #{event_id} not found"
       else
-        puts 'opsgenie -- failed to ' + @event['action'] + ' incident -- ' + event_id
+        puts "opsgenie -- failed to #{@event['action']} incident -- #{event_id}"
         puts "HTTP #{response.code} #{response.message}: #{response.body}"
       end
     end
   rescue Timeout::Error
-    puts 'opsgenie -- timed out while attempting to ' + @event['action'] + ' a incident -- ' + event_id
+    puts "opsgenie -- timed out while attempting to #{@event['action']} a incident -- #{event_id}"
   end
 
   def message
@@ -83,6 +83,8 @@ class Opsgenie < Sensu::Handler
   end
 
   def event_id
+    return @event['check']['opsgenie']['alias'] unless @event['check']['opsgenie'].nil? || @event['check']['opsgenie']['alias'].nil?
+
     # Do not use slashes in the event ID, as this alias becomes part of the URI
     # in the RESTful interactions with OpsGenie; use characters which can be
     # easily embedded into a URI.
