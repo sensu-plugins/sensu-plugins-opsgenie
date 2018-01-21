@@ -131,7 +131,8 @@ class Opsgenie < Sensu::Handler
                      teams:       json_config['teams'])
   end
 
-  def priority
+  def event_priority
+    return nil unless json_config['priority']
     priority = json_config['priority']
 
     canonical_priority = priority.upcase
@@ -159,7 +160,8 @@ class Opsgenie < Sensu::Handler
     params['source'] = json_config['source'] if json_config['source']
 
     # Override priority, if specified.
-    params['priority'] = priority if json_config['priority']
+    priority = event_priority
+    params['priority'] = priority if priority
 
     encoded_alias = URI.escape(params[:alias])
     # TODO: come back and asses if this logic is correct, I left it functionally
