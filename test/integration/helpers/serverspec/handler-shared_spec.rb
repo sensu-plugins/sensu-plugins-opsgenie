@@ -14,6 +14,9 @@ resolve_alert_with_alias_file = '/tmp/kitchen/data/test/fixtures/resolve-alert-w
 
 create_alert_with_description_file = '/tmp/kitchen/data/test/fixtures/create-alert-with-description.json'
 
+create_alert_with_priority_file = '/tmp/kitchen/data/test/fixtures/create-alert-with-priority.json'
+resolve_alert_with_priority_file = '/tmp/kitchen/data/test/fixtures/resolve-alert-with-priority.json'
+
 # These tests would require a valid OpsGenie API key and heartbeat name
 # configured in order to succeed.  Thus for now, we limit ourselves to the
 # expected failure cases.
@@ -42,5 +45,13 @@ describe 'handler-opsgenie' do
   describe command("#{handler} -v < #{create_alert_with_description_file}") do
     its(:stdout) { should_not match(/Description:.*CRITICAL.*text/) }
     its(:stdout) { should match(/Description:.*#{custom_description_pattern}/) }
+
+  custom_priority_pattern = 'bad_priority_value'
+  describe command("#{handler} < #{create_alert_with_priority_file}") do
+    its(:stdout) { should match(/ignoring unsupported priority.*#{custom_priority_pattern}/) }
+  end
+
+  describe command("#{handler} < #{resolve_alert_with_priority_file}") do
+    its(:stdout) { should match(/ignoring unsupported priority.*#{custom_priority_pattern}/) }
   end
 end
