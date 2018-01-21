@@ -14,7 +14,7 @@ class Opsgenie < Sensu::Handler
   attr_reader :json_config, :message_template, :verbose
 
   OPSGENIE_URL = 'https://api.opsgenie.com/v2/alerts'.freeze
-  PRIORITIES = %w[P1 P2 P3 P4 P5]
+  PRIORITIES = %w[P1 P2 P3 P4 P5].freeze
   DEFAULT_PRIORITY = 'P3'.freeze
 
   option :json_config,
@@ -135,7 +135,7 @@ class Opsgenie < Sensu::Handler
     priority = json_config['priority']
 
     canonical_priority = priority.upcase
-    if !PRIORITIES.include? canonical_priority
+    unless PRIORITIES.include? canonical_priority
       puts "opsgenie -- ignoring unsupported priority '#{priority}'"
       canonical_priority = DEFAULT_PRIORITY
     end
