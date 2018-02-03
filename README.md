@@ -19,7 +19,10 @@
 {
   "opsgenie": {
     "customerKey": "the-key",
-    "teams": ["teams"],
+    "teams": [
+      { "name": "the-team" },
+      { "id": "4513b7ea-3b91-438f-b7e4-e3e54af9147c" }
+    ],
     "recipients": "the-recipients",
     "source": "alert-source",
     "overwrite_quiet_hours": true,
