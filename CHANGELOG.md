@@ -5,6 +5,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+## [4.1.2] - 2018-02-05
 ### Fixed
 - Handling of tags for events (@Castaglia)
 
@@ -98,7 +99,8 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 - initial release
 - Fixed json configuration load
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.1.1...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.1.2...HEAD
+[4.1.2]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.1.1...4.1.2
 [4.1.1]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.1.0...4.1.1
 [4.1.0]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.0.1...4.1.0
 [4.0.1]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.0.0...4.0.1
