@@ -120,7 +120,7 @@ class Opsgenie < Sensu::Handler
 
   def tags
     tags = []
-    tags << json_config['tags'] if json_config['tags']
+    tags += json_config['tags'] if json_config['tags']
     tags << 'OverwriteQuietHours' if event_status == 2 && json_config['overwrite_quiet_hours'] == true
     tags << 'unknown' if event_status >= 3
     tags << 'critical' if event_status == 2
