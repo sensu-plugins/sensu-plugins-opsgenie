@@ -11,7 +11,7 @@ require 'json'
 require 'erb'
 
 class Opsgenie < Sensu::Handler
-  attr_reader :json_config, :message_template
+  attr_reader :json_config, :message_template, :verbose
 
   OPSGENIE_URL = 'https://api.opsgenie.com/v2/alerts'.freeze
 
@@ -26,6 +26,12 @@ class Opsgenie < Sensu::Handler
          short: '-t <file_path>',
          long:  '--template <file_path>',
          default: nil
+
+  option :verbose,
+         description: 'Enable verbose/debugging output',
+         short: '-v',
+         long: '--verbose',
+         default: false
 
   def handle
     init
@@ -66,6 +72,11 @@ class Opsgenie < Sensu::Handler
     puts "opsgenie -- timed out while attempting to #{@event['action']} a incident -- #{event_id}"
   end
 
+  def description
+    return json_config['description'] unless json_config['description'].nil?
+    @event['check']['output']
+  end
+
   def message
     return @event['notification'] unless @event['notification'].nil?
     return default_message if message_template.nil? || !File.exist?(message_template)
@@ -79,7 +90,7 @@ class Opsgenie < Sensu::Handler
   end
 
   def default_message
-    [@event['client']['name'], @event['check']['name'], @event['check']['output'].chomp].join(' : ')
+    [@event['client']['name'], @event['check']['name']].join(' : ')
   end
 
   def event_id
@@ -111,7 +122,7 @@ class Opsgenie < Sensu::Handler
     post_to_opsgenie(:create,
                      alias:       event_id,
                      message:     message,
-                     description: json_config['description'],
+                     description: description,
                      entity:      client_name,
                      tags:        tags,
                      recipients:  json_config['recipients'],
@@ -145,6 +156,19 @@ class Opsgenie < Sensu::Handler
                 "#{encoded_alias}/close?identifierType=alias"
               end
     uri = URI.parse("#{OPSGENIE_URL}/#{uripath}")
+
+    if config[:verbose]
+      # Note that the ordering of these lines roughly follows the order
+      # alert fields are displayed in the OpsGenie web UI.
+      puts "URL: #{uri}"
+      puts "Message: #{params[:message]}"
+      puts "Tags: #{params[:tags]}"
+      puts "Entity: #{params[:entity]}"
+      puts "Teams: #{params[:teams]}"
+      puts "Alias: #{params[:alias]}"
+      puts "Description: #{params[:description]}"
+    end
+
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
