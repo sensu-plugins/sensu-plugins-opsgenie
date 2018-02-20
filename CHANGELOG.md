@@ -7,6 +7,9 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 ### Changed
 - Providing better alert description field using Sensu check output (@Castaglia)
 
+### Added
+- `handler-opsgenie.rb`: Added flag of `--verbose` to enable verbose/debugging output (@Castaglia)
+
 ## [4.1.2] - 2018-02-05
 ### Fixed
 - Handling of tags for events (@Castaglia)
