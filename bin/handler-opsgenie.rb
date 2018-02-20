@@ -74,7 +74,7 @@ class Opsgenie < Sensu::Handler
 
   def description
     return json_config['description'] unless json_config['description'].nil?
-    @event['check']['output']
+    @event['check']['output'].chomp
   end
 
   def message
