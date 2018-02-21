@@ -15,6 +15,6 @@ key = 'some.fake.api.key'
 describe 'check-opsgenie-heartbeat' do
   describe command("#{check} --key #{key} --name #{name}") do
     its(:exit_status) { should eq 3 }
-    its(:stdout) { should match(/UNKNOWN: unexpected response code 401/) }
+    its(:stdout) { should match(/UNKNOWN: unexpected response code (401|422)/) }
   end
 end
