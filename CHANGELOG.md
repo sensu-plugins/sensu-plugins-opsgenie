@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+## [4.2.0] - 2018-02-20
 ### Changed
 - Providing better alert description field using Sensu check output (@Castaglia)
 
@@ -105,6 +107,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 - Fixed json configuration load
 
 [Unreleased]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.1.2...HEAD
+[4.2.0]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.1.2...4.2.0
 [4.1.2]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.1.1...4.1.2
 [4.1.1]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.1.0...4.1.1
 [4.1.0]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.0.1...4.1.0
