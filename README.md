@@ -81,7 +81,54 @@ To get this to work you need to specify a few different things. For a list of fi
 }
 ```
 
-## Notes
+## OpsGenie Alerts
+
+How does the handler map the various Sensu values into the OpsGenie
+[alerts and alert fields](https://docs.opsgenie.com/docs/alerts-and-alert-fields) created?
+
+### Message
+
+The OpsGenie _message_ alert field is comprised of the Sensu client name, and
+the Sensu check name, _e.g._:
+```
+web01 : check_mysql_access
+```
+
+### Teams
+
+The OpsGenie _team_ alert field uses the values in the Sensu check configuration
+if any, otherwise it uses the value from the handler configuration.
+
+### Recipients
+
+The OpsGenie _recipients_ alert field uses the values in the Sensu check
+configuration if any, otherwise it uses the value from the handler
+configuration.
+
+### Alias
+
+The OpsGenie _alias_ alert is field is comprised of the Sensu client name,
+and the Sensu check name to create a unique key, _e.g._:
+```
+web01:check_mysql_access
+```
+Note that this can be changed via configuration; see notes below.
+
+### Entity
+
+The OpsGenie _entity_ alert field uses the Sensu client name.
+
+### Description
+
+The OpsGenie _description_ alert field is populated with the Sensu check output.
+
+### Priority
+
+The OpsGenie _priority_ alert field is not explicitly set; OpsGenie will thus
+assign the default priority of "P3" to the alert.
+
+
+## Configuration Notes
 
 If the check definition uses the custom `alias` attribute, _e.g._:
 ```
