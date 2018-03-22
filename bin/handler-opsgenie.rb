@@ -132,7 +132,7 @@ class Opsgenie < Sensu::Handler
   end
 
   def event_priority
-    return nil unless json_config['priority']
+    return DEFAULT_PRIORITY unless json_config['priority']
     priority = json_config['priority']
 
     canonical_priority = priority.upcase
