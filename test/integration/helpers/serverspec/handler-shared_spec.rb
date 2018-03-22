@@ -45,6 +45,7 @@ describe 'handler-opsgenie' do
   describe command("#{handler} -v < #{create_alert_with_description_file}") do
     its(:stdout) { should_not match(/Description:.*CRITICAL.*text/) }
     its(:stdout) { should match(/Description:.*#{custom_description_pattern}/) }
+  end
 
   custom_priority_pattern = 'bad_priority_value'
   describe command("#{handler} < #{create_alert_with_priority_file}") do
