@@ -130,6 +130,10 @@ assign the default priority of "P3" to the alert.
 
 ## Configuration Notes
 
+### Per Check Attributes
+
+#### `alias`
+
 If the check definition uses the custom `alias` attribute, _e.g._:
 ```
 {
@@ -182,3 +186,25 @@ We can define a custom `alias` attribute in this check:
 And with this, running on multiple clients, any alerts would be generated
 with the same event ID of `mysqldb`, by using that `alias` attribute as the
 event ID.
+
+#### `priority`
+
+By default, an OpsGenie alert is created with a default [priority](https://docs.opsgenie.com/docs/priority-settings) value of "P3".  The priority for a specific
+check can be explicitly set using the custom `priority` attribute, _e.g._:
+```
+{
+  "checks": {
+    "check_mysql_access": {
+      "opsgenie": {
+        "priority": "P1",
+
+```
+The list of valid values, per [OpsGenie alert docs](https://docs.opsgenie.com/docs/alert-api#section-create-alert), are:
+
+* P1
+* P2
+* P3
+* P4
+* P5
+
+Any value other than these will be ignored.

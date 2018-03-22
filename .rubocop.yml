@@ -1,4 +1,7 @@
 
+BlockLength:
+  Max: 30
+
 MethodLength:
   Max: 200
 

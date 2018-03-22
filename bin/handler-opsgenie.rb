@@ -14,6 +14,8 @@ class Opsgenie < Sensu::Handler
   attr_reader :json_config, :message_template, :verbose
 
   OPSGENIE_URL = 'https://api.opsgenie.com/v2/alerts'.freeze
+  PRIORITIES = %w[P1 P2 P3 P4 P5].freeze
+  DEFAULT_PRIORITY = 'P3'.freeze
 
   option :json_config,
          description: 'Configuration name',
@@ -129,6 +131,19 @@ class Opsgenie < Sensu::Handler
                      teams:       json_config['teams'])
   end
 
+  def event_priority
+    return DEFAULT_PRIORITY unless json_config['priority']
+    priority = json_config['priority']
+
+    canonical_priority = priority.upcase
+    unless PRIORITIES.include? canonical_priority
+      puts "opsgenie -- ignoring unsupported priority '#{priority}'"
+      canonical_priority = DEFAULT_PRIORITY
+    end
+
+    canonical_priority
+  end
+
   def tags
     tags = []
     tags += json_config['tags'] if json_config['tags']
@@ -141,8 +156,12 @@ class Opsgenie < Sensu::Handler
   end
 
   def post_to_opsgenie(action = :create, params = {})
-    # override source if specified, default is ip
+    # Override source if specified, default is ip
     params['source'] = json_config['source'] if json_config['source']
+
+    # Override priority, if specified.
+    priority = event_priority
+    params['priority'] = priority if priority
 
     encoded_alias = URI.escape(params[:alias])
     # TODO: come back and asses if this logic is correct, I left it functionally
