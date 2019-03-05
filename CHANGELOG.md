@@ -5,6 +5,9 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+### Breaking Changes
+- Bump sensu-plugin version to 4.0 for Sensu 1.x to Sensu Go event conversion
+
 ## [4.3.0] - 2018-03-21
 ### Added
 - Added possibility to specify priority per check (@Castaglia)
