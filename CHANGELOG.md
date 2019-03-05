@@ -8,6 +8,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 ### Breaking Changes
 - Bump sensu-plugin version to 4.0 for Sensu 1.x to Sensu Go event conversion
 - drop support and testing for ruby 2.1 and 2.2 as they are EOL
+=======
 
 ## [4.3.0] - 2018-03-21
 ### Added
