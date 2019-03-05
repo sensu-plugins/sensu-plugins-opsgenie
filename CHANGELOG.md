@@ -4,6 +4,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+### Breaking Changes
+- Bump sensu-plugin version to 4.0 for Sensu 1.x to Sensu Go event conversion
+- drop support and testing for ruby 2.1 and 2.2 as they are EOL
+
+## [4.3.0] - 2018-03-21
 ### Added
 - Added possibility to specify priority per check (@Castaglia)
 
@@ -108,7 +114,8 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 - initial release
 - Fixed json configuration load
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.1.2...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.3.0...HEAD
+[4.3.0]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.2.0...4.3.0
 [4.2.0]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.1.2...4.2.0
 [4.1.2]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.1.1...4.1.2
 [4.1.1]: https://github.com/sensu-plugins/sensu-plugins-opsgenie/compare/4.1.0...4.1.1
