@@ -208,3 +208,17 @@ The list of valid values, per [OpsGenie alert docs](https://docs.opsgenie.com/do
 * P5
 
 Any value other than these will be ignored.
+
+You can as well configure different priorities per status:
+```
+{
+  "checks": {
+    "check_mysql_access": {
+      "opsgenie": {
+        "priority": {
+          "critical": "P1",
+          "warning": "P2",
+          "unknown": "P5"
+        }
+
+```
