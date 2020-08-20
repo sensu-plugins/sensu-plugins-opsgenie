@@ -91,7 +91,7 @@ class OpsgenieHeartbeat < Sensu::Plugin::Check::CLI
     u = URI.parse(config[:proxy_url])
     proxy = [u.host, u.port, u.user, u.password].compact
 
-    Net::HTTP.start(uri.host, uri.port, *proxy, :use_ssl => true, :verify_mode => OpenSSL::SSL::VERIFY_NONE) do |http|
+    Net::HTTP.start(uri.host, uri.port, *proxy, use_ssl: true, verify_mode: OpenSSL::SSL::VERIFY_NONE) do |http|
       request = Net::HTTP::Post.new(uri.request_uri, 'Authorization' => "GenieKey #{config[:api_key]}")
       http.request(request)
     end

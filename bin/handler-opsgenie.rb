@@ -200,7 +200,7 @@ class Opsgenie < Sensu::Handler
     u = URI.parse(config[:proxy_url])
     proxy = [u.host, u.port, u.user, u.password].compact
 
-    Net::HTTP.start(uri.host, uri.port, *proxy, :use_ssl => true, :verify_mode => OpenSSL::SSL::VERIFY_NONE) do |http|
+    Net::HTTP.start(uri.host, uri.port, *proxy, use_ssl: true, verify_mode: OpenSSL::SSL::VERIFY_NONE) do |http|
       request = Net::HTTP::Post.new(uri.request_uri, 'Authorization' => "GenieKey #{json_config['customerKey']}", 'Content-Type' => 'application/json')
       request.body = params.to_json
       http.request(request)
