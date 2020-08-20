@@ -43,6 +43,11 @@ class OpsgenieHeartbeat < Sensu::Plugin::Check::CLI
          description: 'Opsgenie API key',
          required: true
 
+  option :api_endpoint,
+         long: '--api endpoint',
+         description: 'Opsgenie API endpoint',
+         default: 'api.opsgenie.com'
+
   option :name,
          short: '-n Name',
          long: '--name Name',
@@ -55,6 +60,11 @@ class OpsgenieHeartbeat < Sensu::Plugin::Check::CLI
          description: 'Plugin timeout',
          proc: proc(&:to_i),
          default: 10
+
+  option :proxy_url,
+         long: '--proxy Proxy',
+         description: 'Proxy URL',
+         default: ''
 
   def run
     Timeout.timeout(config[:timeout]) do
@@ -76,11 +86,14 @@ class OpsgenieHeartbeat < Sensu::Plugin::Check::CLI
 
   def opsgenie_heartbeat
     encoded_name = URI.escape(config[:name])
-    uri = URI.parse("https://api.opsgenie.com/v2/heartbeats/#{encoded_name}/ping")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    request = Net::HTTP::Post.new(uri.request_uri, 'Authorization' => "GenieKey #{config[:api_key]}")
-    http.request(request)
+    uri = URI.parse("https://#{config[:api_endpoint]}/v2/heartbeats/#{encoded_name}/ping")
+
+    u = URI.parse(config[:proxy_url])
+    proxy = [u.host, u.port, u.user, u.password].compact
+
+    Net::HTTP.start(uri.host, uri.port, *proxy, :use_ssl => true, :verify_mode => OpenSSL::SSL::VERIFY_NONE) do |http|
+      request = Net::HTTP::Post.new(uri.request_uri, 'Authorization' => "GenieKey #{config[:api_key]}")
+      http.request(request)
+    end
   end
 end

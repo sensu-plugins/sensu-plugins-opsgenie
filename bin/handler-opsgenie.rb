@@ -13,7 +13,6 @@ require 'erb'
 class Opsgenie < Sensu::Handler
   attr_reader :json_config, :message_template, :verbose
 
-  OPSGENIE_URL = 'https://api.opsgenie.com/v2/alerts'.freeze
   PRIORITIES = %w[P1 P2 P3 P4 P5].freeze
   DEFAULT_PRIORITY = 'P3'.freeze
 
@@ -28,6 +27,16 @@ class Opsgenie < Sensu::Handler
          short: '-t <file_path>',
          long:  '--template <file_path>',
          default: nil
+
+  option :api_endpoint,
+         description: 'Opsgenie API endpoint',
+         long: '--api endpoint',
+         default: 'api.opsgenie.com'
+
+  option :proxy_url,
+         long: '--proxy Proxy',
+         description: 'Proxy URL',
+         default: ''
 
   option :verbose,
          description: 'Enable verbose/debugging output',
@@ -174,7 +183,7 @@ class Opsgenie < Sensu::Handler
               else
                 "#{encoded_alias}/close?identifierType=alias"
               end
-    uri = URI.parse("#{OPSGENIE_URL}/#{uripath}")
+    uri = URI.parse("https://#{config[:api_endpoint]}/v2/alerts/#{uripath}")
 
     if config[:verbose]
       # Note that the ordering of these lines roughly follows the order
@@ -188,11 +197,13 @@ class Opsgenie < Sensu::Handler
       puts "Description: #{params[:description]}"
     end
 
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    request = Net::HTTP::Post.new(uri.request_uri, 'Authorization' => "GenieKey #{json_config['customerKey']}", 'Content-Type' => 'application/json')
-    request.body = params.to_json
-    http.request(request)
+    u = URI.parse(config[:proxy_url])
+    proxy = [u.host, u.port, u.user, u.password].compact
+
+    Net::HTTP.start(uri.host, uri.port, *proxy, :use_ssl => true, :verify_mode => OpenSSL::SSL::VERIFY_NONE) do |http|
+      request = Net::HTTP::Post.new(uri.request_uri, 'Authorization' => "GenieKey #{json_config['customerKey']}", 'Content-Type' => 'application/json')
+      request.body = params.to_json
+      http.request(request)
+    end
   end
 end
