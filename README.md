@@ -23,7 +23,15 @@
       { "name": "the-team" },
       { "id": "4513b7ea-3b91-438f-b7e4-e3e54af9147c" }
     ],
-    "recipients": "the-recipients",
+    "users": [
+      { "username": "trinity@opsgenie.com" }
+    ],
+    "escalations": [
+      { "name": "Nightwatch Escalation" }
+    ],
+    "schedules": [
+      { "id": "80564037-1984-4f38-b98e-8a1f662df552" }
+    ],
     "source": "alert-source",
     "overwrite_quiet_hours": true,
     "tags": ["sensu"]
@@ -94,16 +102,11 @@ the Sensu check name, _e.g._:
 web01 : check_mysql_access
 ```
 
-### Teams
+### Responders
 
-The OpsGenie _team_ alert field uses the values in the Sensu check configuration
-if any, otherwise it uses the value from the handler configuration.
-
-### Recipients
-
-The OpsGenie _recipients_ alert field uses the values in the Sensu check
-configuration if any, otherwise it uses the value from the handler
-configuration.
+The OpsGenie _responders_ alert field combines the values of the teams, users,
+escalations, and schedules values from the Sensu check configuration if any,
+otherwise it uses the values from the handler configuration.
 
 ### Alias
 
