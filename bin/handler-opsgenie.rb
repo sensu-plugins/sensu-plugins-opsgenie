@@ -120,6 +120,12 @@ class Opsgenie < Sensu::Handler
     @event['client']['name']
   end
 
+  def details
+    details = {}
+    return @event['check']['opsgenie']['details'] unless @event['check']['opsgenie'].nil? || @event['check']['opsgenie']['details'].nil?
+    details
+  end
+
   def create_alert
     post_to_opsgenie(:create,
                      alias:       event_id,
@@ -128,7 +134,8 @@ class Opsgenie < Sensu::Handler
                      entity:      client_name,
                      tags:        tags,
                      recipients:  json_config['recipients'],
-                     teams:       json_config['teams'])
+                     teams:       json_config['teams']),
+                     details:     details
   end
 
   def event_priority
@@ -186,6 +193,7 @@ class Opsgenie < Sensu::Handler
       puts "Teams: #{params[:teams]}"
       puts "Alias: #{params[:alias]}"
       puts "Description: #{params[:description]}"
+      puts "Details: #{params[:details]}"
     end
 
     http = Net::HTTP.new(uri.host, uri.port)
