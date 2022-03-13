@@ -134,8 +134,8 @@ class Opsgenie < Sensu::Handler
                      entity:      client_name,
                      tags:        tags,
                      recipients:  json_config['recipients'],
-                     teams:       json_config['teams']),
-                     details:     details
+                     teams:       json_config['teams'],
+                     details:     details)
   end
 
   def event_priority
