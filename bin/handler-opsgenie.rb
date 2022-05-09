@@ -139,8 +139,17 @@ class Opsgenie < Sensu::Handler
   end
 
   def event_priority
-    return DEFAULT_PRIORITY unless json_config['priority']
-    priority = json_config['priority']
+    if event_status == 1 && json_config['priority']['warning']
+      priority = json_config['priority']['warning']
+    elsif event_status == 2 && json_config['priority']['critical']
+      priority = json_config['priority']['critical']
+    elsif event_status >= 3 && json_config['priority']['unknown']
+      priority = json_config['priority']['unknown']
+    elsif json_config['priority']
+      priority = json_config['priority']
+    else
+      return DEFAULT_PRIORITY
+    end
 
     canonical_priority = priority.upcase
     unless PRIORITIES.include? canonical_priority
